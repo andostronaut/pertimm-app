@@ -64,6 +64,14 @@
 			>
 				Create Application
 			</button>
+
+			<button
+				type="submit"
+				class="w-full border-4 border-black bg-[#dbdadf] p-3 text-lg font-bold transition-transform hover:translate-x-1 hover:translate-y-1 active:translate-x-0 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50"
+				disabled
+			>
+				Completing Application
+			</button>
 		</form>
 	</div>
 </div>

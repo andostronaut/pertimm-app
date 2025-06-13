@@ -28,9 +28,62 @@ export const actions = {
 			return fail(400, { error: { message: 'An error occurred while creating the application' } });
 		}
 
-		const data = await response.json();
+		const application = await response.json();
 
-		console.log('Application created successfully:', data);
+		if (application && application.url) {
+			setInterval(async () => {
+				const response = await fetch(application.url, {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: `Token ${cookies.get('token')}`
+					}
+				});
+
+				if (!response.ok) {
+					return fail(400, {
+						error: { message: 'An error occurred while completing the application' }
+					});
+				}
+
+				const status = await response.json();
+
+				if (status.status === 'COMPLETED') {
+					clearInterval(this);
+
+					if (status && status.confirmation_url) {
+						const confirmation = await fetch(status.confirmation_url, {
+							method: 'PATCH',
+							headers: {
+								'Content-Type': 'application/json',
+								Authorization: `Token ${cookies.get('token')}`
+							},
+							body: JSON.stringify({ confirmed: true })
+						});
+
+						if (!confirmation.ok) {
+							return fail(400, {
+								error: { message: 'An error occurred while confirming the application' }
+							});
+						}
+
+						const confirmationResult = await confirmation.json();
+
+						if (confirmationResult && confirmationResult.confirmed) {
+							return {
+								status: 303,
+								success: { message: 'Application confirmed successfully!' }
+							};
+						}
+					}
+				} else {
+					return {
+						status: 303,
+						success: { message: 'Application is still in progress. Please check back later.' }
+					};
+				}
+			}, 1000);
+		}
 
 		return {
 			status: 303,
