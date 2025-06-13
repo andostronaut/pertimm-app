@@ -1,9 +1,5 @@
 <script lang="ts">
-	let email = $state('');
-	let password = $state('');
-	let isLoading = $state(false);
-	let error = $state('');
-	let success = $state('');
+	let { form } = $props();
 
 	let showPassword = $state(false);
 
@@ -19,15 +15,9 @@
 	</div>
 
 	<div class="border-4 border-black bg-white p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-		{#if error}
+		{#if form?.error?.message}
 			<div class="mb-4 rounded border-2 border-red-400 bg-red-100 p-3 text-red-700">
-				{error}
-			</div>
-		{/if}
-
-		{#if success}
-			<div class="mb-4 rounded border-2 border-green-400 bg-green-100 p-3 text-green-700">
-				{success}
+				{form.error.message}
 			</div>
 		{/if}
 
@@ -37,11 +27,10 @@
 				<input
 					type="email"
 					id="email"
-					bind:value={email}
+					name="email"
 					required
 					class="focus:ring-bcaae0 w-full border-4 border-black p-3 text-lg focus:ring-4 focus:outline-none"
 					placeholder="your@email.com"
-					disabled={isLoading}
 				/>
 			</div>
 
@@ -51,11 +40,10 @@
 					<input
 						type={showPassword ? 'text' : 'password'}
 						id="password"
-						bind:value={password}
+						name="password"
 						required
 						class="focus:ring-bcaae0 w-full border-4 border-black p-3 text-lg focus:ring-4 focus:outline-none"
 						placeholder="••••••••"
-						disabled={isLoading}
 					/>
 					<button
 						type="button"
@@ -106,9 +94,8 @@
 			<button
 				type="submit"
 				class="w-full border-4 border-black bg-[#bcaae0] p-3 text-lg font-bold transition-transform hover:translate-x-1 hover:translate-y-1 active:translate-x-0 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50"
-				disabled={isLoading}
 			>
-				{isLoading ? 'Logging in...' : 'Login'}
+				Login
 			</button>
 		</form>
 

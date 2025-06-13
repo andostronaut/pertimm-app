@@ -9,13 +9,11 @@ export const actions = {
 		const password1 = formData.get('password1');
 		const password2 = formData.get('password2');
 
-		console.log({ email, password1, password2 });
-
 		if (password1 !== password2) {
-			return fail(400, { message: "Passwords don't match" });
+			return fail(400, { error: { message: 'Passwords do not match' } });
 		}
 
-		const response = await fetch(`${API_BASE_URL}/register/`, {
+		const response = await fetch(`${API_BASE_URL}/auth/register/`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
@@ -24,10 +22,9 @@ export const actions = {
 		});
 
 		if (!response.ok) {
-			const errorData = await response.json().catch(() => ({}));
-			return fail(400, { message: errorData.message || 'Registration failed' });
+			return fail(400, { error: { message: 'An error occurred during registration' } });
 		}
 
-		redirect(200, '/login');
+		redirect(303, '/login');
 	}
 };

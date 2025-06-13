@@ -1,8 +1,5 @@
 <script lang="ts">
-	let email = $state('');
-	let password1 = $state('');
-	let password2 = $state('');
-	let isLoading = $state(false);
+	let { form } = $props();
 
 	let showPassword = $state(false);
 	let showConfirmPassword = $state(false);
@@ -22,6 +19,12 @@
 		<p class="text-gray-600">Create a new account</p>
 	</div>
 
+	{#if form?.error?.message}
+		<div class="mb-4 rounded border-2 border-red-400 bg-red-100 p-3 text-red-700">
+			{form.error.message}
+		</div>
+	{/if}
+
 	<div class="border-4 border-black bg-white p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
 		<form method="POST" class="space-y-6">
 			<div>
@@ -29,11 +32,10 @@
 				<input
 					type="email"
 					id="email"
-					bind:value={email}
+					name="email"
 					required
 					class="focus:ring-bcaae0 w-full border-4 border-black p-3 text-lg focus:ring-4 focus:outline-none"
 					placeholder="your@email.com"
-					disabled={isLoading}
 				/>
 			</div>
 
@@ -43,11 +45,10 @@
 					<input
 						type={showPassword ? 'text' : 'password'}
 						id="password1"
-						bind:value={password1}
+						name="password1"
 						required
 						class="focus:ring-bcaae0 w-full border-4 border-black p-3 text-lg focus:ring-4 focus:outline-none"
 						placeholder="••••••••"
-						disabled={isLoading}
 					/>
 					<button
 						type="button"
@@ -101,11 +102,10 @@
 					<input
 						type={showConfirmPassword ? 'text' : 'password'}
 						id="password2"
-						bind:value={password2}
+						name="password2"
 						required
 						class="focus:ring-bcaae0 w-full border-4 border-black p-3 text-lg focus:ring-4 focus:outline-none"
 						placeholder="••••••••"
-						disabled={isLoading}
 					/>
 					<button
 						type="button"
@@ -157,9 +157,8 @@
 			<button
 				type="submit"
 				class="w-full border-4 border-black bg-[#bcaae0] p-3 text-lg font-bold transition-transform hover:translate-x-1 hover:translate-y-1 active:translate-x-0 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50"
-				disabled={isLoading}
 			>
-				{isLoading ? 'Registering...' : 'Register'}
+				Register
 			</button>
 		</form>
 

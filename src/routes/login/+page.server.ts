@@ -8,7 +8,7 @@ export const actions = {
 		const email = formData.get('email');
 		const password = formData.get('password');
 
-		const response = await fetch(`${API_BASE_URL}/login/`, {
+		const response = await fetch(`${API_BASE_URL}/auth/login/`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
@@ -18,7 +18,7 @@ export const actions = {
 
 		if (!response.ok) {
 			const errorData = await response.json().catch(() => ({}));
-			return fail(400, { message: errorData.message || 'Login failed' });
+			return fail(400, { error: { message: errorData.message || 'Login failed' } });
 		}
 
 		const data = await response.json();
