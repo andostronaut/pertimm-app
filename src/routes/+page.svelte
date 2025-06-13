@@ -23,7 +23,7 @@
 			last_name: lastName
 		};
 
-		const postApplication = await fetch('/api/application-request', {
+		const postApplication = await fetch('/api/applications/request', {
 			method: 'POST',
 			body: JSON.stringify(app)
 		});
@@ -47,7 +47,7 @@
 
 			const applicationUrlEncoded = encodeURIComponent(applicationUrl);
 			const fetchStatus = await fetch(
-				`/api/application-status?application_url=${applicationUrlEncoded}`,
+				`/api/applications/status?application_url=${applicationUrlEncoded}`,
 				{ method: 'GET' }
 			);
 
@@ -73,7 +73,7 @@
 
 			const confirmationUrlEncoded = encodeURIComponent(confirmationUrl);
 			const patchApplication = await fetch(
-				`/api/application-confirm?confirmation_url=${confirmationUrlEncoded}`,
+				`/api/applications/confirm?confirmation_url=${confirmationUrlEncoded}`,
 				{ method: 'PATCH' }
 			);
 
