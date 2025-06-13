@@ -1,40 +1,10 @@
 <script lang="ts">
-	import { preventDefault } from 'svelte/legacy';
-
-	import { createApplication } from './api';
-
 	let email = $state('');
 	let firstName = $state('');
 	let lastName = $state('');
 	let isLoading = $state(false);
 	let error = $state('');
 	let success = $state('');
-
-	const handleSubmit = async () => {
-		try {
-			isLoading = true;
-			error = '';
-			success = '';
-
-			const data = {
-				email,
-				first_name: firstName,
-				last_name: lastName
-			};
-
-			await createApplication(data);
-			success = 'Application submitted successfully!';
-
-			// Clear form after successful submission
-			email = '';
-			firstName = '';
-			lastName = '';
-		} catch (err) {
-			error = 'Application submission failed. Please try again.';
-		} finally {
-			isLoading = false;
-		}
-	};
 </script>
 
 <div class="w-full max-w-md">
@@ -56,7 +26,7 @@
 			</div>
 		{/if}
 
-		<form onsubmit={preventDefault(handleSubmit)} class="space-y-6">
+		<form method="POST" class="space-y-6">
 			<div>
 				<label for="email" class="mb-2 block text-lg font-bold">Email</label>
 				<input

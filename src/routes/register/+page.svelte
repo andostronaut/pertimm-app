@@ -1,36 +1,18 @@
 <script lang="ts">
-	import { preventDefault } from 'svelte/legacy';
-	import { goto } from '$app/navigation';
-
-	import { register } from '../api';
-
 	let email = $state('');
-	let password = $state('');
-	let confirmPassword = $state('');
+	let password1 = $state('');
+	let password2 = $state('');
 	let isLoading = $state(false);
-	let error = $state('');
-	let success = $state('');
 
-	const handleSubmit = async () => {
-		try {
-			if (password !== confirmPassword) {
-				error = "Passwords don't match!";
-				return;
-			}
+	let showPassword = $state(false);
+	let showConfirmPassword = $state(false);
 
-			isLoading = true;
-			error = '';
-			success = '';
+	const togglePasswordVisibility = () => {
+		showPassword = !showPassword;
+	};
 
-			await register(email, password);
-			success = 'Registration successful! You can now login.';
-
-			goto('/');
-		} catch (err) {
-			error = 'Registration failed. Please try again.';
-		} finally {
-			isLoading = false;
-		}
+	const toggleConfirmPasswordVisibility = () => {
+		showConfirmPassword = !showConfirmPassword;
 	};
 </script>
 
@@ -41,19 +23,7 @@
 	</div>
 
 	<div class="border-4 border-black bg-white p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-		{#if error}
-			<div class="mb-4 rounded border-2 border-red-400 bg-red-100 p-3 text-red-700">
-				{error}
-			</div>
-		{/if}
-
-		{#if success}
-			<div class="mb-4 rounded border-2 border-green-400 bg-green-100 p-3 text-green-700">
-				{success}
-			</div>
-		{/if}
-
-		<form onsubmit={preventDefault(handleSubmit)} class="space-y-6">
+		<form method="POST" class="space-y-6">
 			<div>
 				<label for="email" class="mb-2 block text-lg font-bold">Email</label>
 				<input
@@ -67,30 +37,121 @@
 				/>
 			</div>
 
-			<div>
-				<label for="password" class="mb-2 block text-lg font-bold">Password</label>
-				<input
-					type="password"
-					id="password"
-					bind:value={password}
-					required
-					class="focus:ring-bcaae0 w-full border-4 border-black p-3 text-lg focus:ring-4 focus:outline-none"
-					placeholder="••••••••"
-					disabled={isLoading}
-				/>
+			<div class="relative">
+				<label for="password1" class="mb-2 block text-lg font-bold">Password</label>
+				<div class="relative">
+					<input
+						type={showPassword ? 'text' : 'password'}
+						id="password1"
+						bind:value={password1}
+						required
+						class="focus:ring-bcaae0 w-full border-4 border-black p-3 text-lg focus:ring-4 focus:outline-none"
+						placeholder="••••••••"
+						disabled={isLoading}
+					/>
+					<button
+						type="button"
+						onclick={togglePasswordVisibility}
+						class="absolute top-1/2 right-4 -translate-y-1/2 transform"
+						aria-label={showPassword ? 'Hide password' : 'Show password'}
+					>
+						{#if showPassword}
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="24"
+								height="24"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								class="lucide lucide-eye-off"
+								><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path><path
+									d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"
+								></path><path
+									d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"
+								></path><line x1="2" x2="22" y1="2" y2="22"></line></svg
+							>{:else}
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="24"
+								height="24"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								class="lucide lucide-eye"
+								><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle
+									cx="12"
+									cy="12"
+									r="3"
+								></circle></svg
+							>
+						{/if}
+					</button>
+				</div>
 			</div>
 
-			<div>
-				<label for="confirmPassword" class="mb-2 block text-lg font-bold">Confirm Password</label>
-				<input
-					type="password"
-					id="confirmPassword"
-					bind:value={confirmPassword}
-					required
-					class="focus:ring-bcaae0 w-full border-4 border-black p-3 text-lg focus:ring-4 focus:outline-none"
-					placeholder="••••••••"
-					disabled={isLoading}
-				/>
+			<div class="relative">
+				<label for="password2" class="mb-2 block text-lg font-bold">Confirm Password</label>
+				<div class="relative">
+					<input
+						type={showConfirmPassword ? 'text' : 'password'}
+						id="password2"
+						bind:value={password2}
+						required
+						class="focus:ring-bcaae0 w-full border-4 border-black p-3 text-lg focus:ring-4 focus:outline-none"
+						placeholder="••••••••"
+						disabled={isLoading}
+					/>
+					<button
+						type="button"
+						onclick={toggleConfirmPasswordVisibility}
+						class="absolute top-1/2 right-4 -translate-y-1/2 transform"
+						aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+					>
+						{#if showConfirmPassword}
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="24"
+								height="24"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								class="lucide lucide-eye-off"
+								><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path><path
+									d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"
+								></path><path
+									d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"
+								></path><line x1="2" x2="22" y1="2" y2="22"></line></svg
+							>
+						{:else}
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="24"
+								height="24"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								class="lucide lucide-eye"
+								><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle
+									cx="12"
+									cy="12"
+									r="3"
+								></circle></svg
+							>
+						{/if}
+					</button>
+				</div>
 			</div>
 
 			<button
