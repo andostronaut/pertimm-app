@@ -17,8 +17,7 @@ export const actions = {
 		});
 
 		if (!response.ok) {
-			const errorData = await response.json().catch(() => ({}));
-			return fail(400, { error: { message: errorData.message || 'Login failed' } });
+			return fail(400, { error: { message: 'An error occurred during login' } });
 		}
 
 		const data = await response.json();

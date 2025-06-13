@@ -8,7 +8,7 @@ export const load = async ({ cookies }) => {
 };
 
 export const actions = {
-	create: async ({ request }) => {
+	default: async ({ request, cookies }) => {
 		const formData = await request.formData();
 
 		const email = formData.get('email');
@@ -18,16 +18,25 @@ export const actions = {
 		const response = await fetch(`${API_BASE_URL}/job-application-request/`, {
 			method: 'POST',
 			headers: {
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
+				Authorization: `Token ${cookies.get('token')}`
 			},
 			body: JSON.stringify({ email, first_name, last_name })
 		});
 
 		if (!response.ok) {
-			const errorData = await response.json().catch(() => ({}));
-			return fail(400, { message: errorData.message || 'Application request failed' });
+			return fail(400, { error: { message: 'An error occurred while creating the application' } });
 		}
 
-		redirect(200, '/');
+		const data = await response.json();
+
+		console.log('Application created successfully:', data);
+
+		return {
+			status: 303,
+			success: {
+				message: 'Application created successfully! Please await it to be completed.'
+			}
+		};
 	}
 };
