@@ -2,7 +2,11 @@
 	import EyeOpen from '../../components/icons/eye-open.svelte';
 	import EyeClosed from '../../components/icons/eye-close.svelte';
 
-	let { form } = $props();
+	let email = $state('');
+	let password1 = $state('');
+	let password2 = $state('');
+
+	let postRegisterLoading = $state(false);
 
 	let showPassword = $state(false);
 	let showConfirmPassword = $state(false);
@@ -14,6 +18,28 @@
 	const toggleConfirmPasswordVisibility = () => {
 		showConfirmPassword = !showConfirmPassword;
 	};
+
+	const postRegister = async () => {
+		postRegisterLoading = true;
+
+		const data = {
+			email,
+			password1,
+			password2
+		};
+
+		const response = await fetch('/api/auth/register', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(data)
+		});
+
+		if (response.ok) window.location.href = '/login';
+
+		postRegisterLoading = false;
+	};
 </script>
 
 <div class="w-full max-w-md">
@@ -22,14 +48,8 @@
 		<p class="text-gray-600">Create a new account</p>
 	</div>
 
-	{#if form?.error?.message}
-		<div class="mb-4 rounded border-2 border-red-400 bg-red-100 p-3 text-red-700">
-			{form.error.message}
-		</div>
-	{/if}
-
 	<div class="border-4 border-black bg-white p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-		<form method="POST" class="space-y-6">
+		<form class="space-y-6">
 			<div>
 				<label for="email" class="mb-2 block text-lg font-bold">Email</label>
 				<input
@@ -39,6 +59,7 @@
 					required
 					class="focus:ring-bcaae0 w-full border-4 border-black p-3 text-lg focus:ring-4 focus:outline-none"
 					placeholder="your@email.com"
+					bind:value={email}
 				/>
 			</div>
 
@@ -52,6 +73,7 @@
 						required
 						class="focus:ring-bcaae0 w-full border-4 border-black p-3 text-lg focus:ring-4 focus:outline-none"
 						placeholder="••••••••"
+						bind:value={password1}
 					/>
 					<button
 						type="button"
@@ -78,6 +100,7 @@
 						required
 						class="focus:ring-bcaae0 w-full border-4 border-black p-3 text-lg focus:ring-4 focus:outline-none"
 						placeholder="••••••••"
+						bind:value={password2}
 					/>
 					<button
 						type="button"
@@ -95,10 +118,12 @@
 			</div>
 
 			<button
-				type="submit"
+				type="button"
 				class="w-full border-4 border-black bg-[#bcaae0] p-3 text-lg font-bold transition-transform hover:translate-x-1 hover:translate-y-1 active:translate-x-0 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50"
+				onclick={postRegister}
+				disabled={postRegisterLoading}
 			>
-				Register
+				{postRegisterLoading ? 'Registering...' : 'Register'}
 			</button>
 		</form>
 

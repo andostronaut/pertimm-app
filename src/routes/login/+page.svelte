@@ -2,12 +2,38 @@
 	import EyeOpen from '../../components/icons/eye-open.svelte';
 	import EyeClosed from '../../components/icons/eye-close.svelte';
 
-	let { form } = $props();
+	let email = $state('');
+	let password = $state('');
+
+	let postLoginLoading = $state(false);
 
 	let showPassword = $state(false);
 
 	const togglePasswordVisibility = () => {
 		showPassword = !showPassword;
+	};
+
+	const postLogin = async () => {
+		postLoginLoading = true;
+
+		const data = {
+			email,
+			password
+		};
+
+		const response = await fetch('/api/auth/login', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(data)
+		});
+
+		const result = await response.json();
+
+		if (response.ok) window.location.href = '/';
+
+		postLoginLoading = false;
 	};
 </script>
 
@@ -18,13 +44,7 @@
 	</div>
 
 	<div class="border-4 border-black bg-white p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-		{#if form?.error?.message}
-			<div class="mb-4 rounded border-2 border-red-400 bg-red-100 p-3 text-red-700">
-				{form.error.message}
-			</div>
-		{/if}
-
-		<form method="POST" class="space-y-6">
+		<form class="space-y-6">
 			<div>
 				<label for="email" class="mb-2 block text-lg font-bold">Email</label>
 				<input
@@ -34,6 +54,9 @@
 					required
 					class="focus:ring-bcaae0 w-full border-4 border-black p-3 text-lg focus:ring-4 focus:outline-none"
 					placeholder="your@email.com"
+					bind:value={email}
+					autocomplete="email"
+					disabled={postLoginLoading}
 				/>
 			</div>
 
@@ -47,6 +70,8 @@
 						required
 						class="focus:ring-bcaae0 w-full border-4 border-black p-3 text-lg focus:ring-4 focus:outline-none"
 						placeholder="••••••••"
+						bind:value={password}
+						disabled={postLoginLoading}
 					/>
 					<button
 						type="button"
@@ -64,10 +89,12 @@
 			</div>
 
 			<button
-				type="submit"
+				type="button"
+				onclick={postLogin}
+				disabled={postLoginLoading}
 				class="w-full border-4 border-black bg-[#bcaae0] p-3 text-lg font-bold transition-transform hover:translate-x-1 hover:translate-y-1 active:translate-x-0 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50"
 			>
-				Login
+				{postLoginLoading ? 'Logging in...' : 'Login'}
 			</button>
 		</form>
 
