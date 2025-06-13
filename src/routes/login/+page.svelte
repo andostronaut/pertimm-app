@@ -37,6 +37,10 @@
 	};
 </script>
 
+<svelte:head>
+	<title>Pertimm - Login</title>
+</svelte:head>
+
 <div class="w-full max-w-md">
 	<div class="mb-8 text-center">
 		<h1 class="mb-2 text-4xl font-bold">Login</h1>

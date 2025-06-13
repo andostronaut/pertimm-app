@@ -87,6 +87,10 @@
 	};
 </script>
 
+<svelte:head>
+	<title>Pertimm - Create Application</title>
+</svelte:head>
+
 <div class="w-full max-w-md">
 	<div class="mb-8 text-center">
 		<h1 class="mb-2 text-4xl font-bold">Create Application</h1>
