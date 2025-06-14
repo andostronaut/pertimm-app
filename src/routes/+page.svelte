@@ -8,6 +8,8 @@
 	let applicationUrl = $state('');
 	let confirmationUrl = $state('');
 
+	let isAlreadyCompleted = $state(false);
+
 	let postApplicationRequestLoading = $state(false);
 	let getApplicationStatusLoading = $state(false);
 	let patchApplicationConfirmLoading = $state(false);
@@ -55,6 +57,7 @@
 
 			if (status.status === 'COMPLETED') {
 				clearInterval(interval);
+				isAlreadyCompleted = true;
 				getApplicationStatusLoading = false;
 
 				if (status && status.confirmation_url) {
@@ -96,6 +99,49 @@
 		<h1 class="mb-2 text-4xl font-bold">Create Application</h1>
 		<p class="text-gray-600">Fill in your details to create a new application</p>
 	</div>
+
+	{#if message}
+		<div class="mb-4">
+			<div>{message}</div>
+
+			{#if getApplicationStatusLoading}
+				<div class="rounded bg-gray-100 p-2">
+					<p class="text-sm text-gray-500">Checking application status...</p>
+				</div>
+			{/if}
+			{#if postApplicationRequestLoading}
+				<div class="rounded bg-gray-100 p-2">
+					<p class="text-sm text-gray-500">Creating application...</p>
+				</div>
+			{/if}
+			{#if patchApplicationConfirmLoading}
+				<div class="rounded bg-gray-100 p-2">
+					<p class="text-sm text-gray-500">Confirming application...</p>
+				</div>
+			{/if}
+		</div>
+	{/if}
+
+	{#if isAlreadyCompleted}
+		<div class="mb-4">
+			<p class="text-lg font-bold">Application Status:</p>
+			<p class="text-green-600">Your application has already been completed.</p>
+		</div>
+	{/if}
+
+	{#if applicationUrl}
+		<div class="mb-4">
+			<p class="text-lg font-bold">Application URL:</p>
+			<a
+				href={applicationUrl}
+				target="_blank"
+				rel="noopener noreferrer"
+				class="text-blue-500 underline"
+			>
+				{applicationUrl}
+			</a>
+		</div>
+	{/if}
 
 	<div class="border-4 border-black bg-white p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
 		<form class="space-y-6">
@@ -173,7 +219,7 @@
 			<button
 				type="button"
 				class="w-full border-4 border-black bg-[#bcaae0] p-3 text-lg font-bold transition-transform hover:translate-x-1 hover:translate-y-1 active:translate-x-0 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50"
-				disabled={patchApplicationConfirmLoading}
+				disabled={patchApplicationConfirmLoading || isAlreadyCompleted || !confirmationUrl}
 				onclick={patchApplicationConfirm}
 			>
 				{patchApplicationConfirmLoading ? 'Confirming...' : 'Confirm Application'}

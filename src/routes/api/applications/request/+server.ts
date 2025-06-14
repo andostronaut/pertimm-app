@@ -13,8 +13,6 @@ export const POST = async ({ cookies, request }) => {
 		body: JSON.stringify(body)
 	});
 
-	console.log('Response status:', response);
-
 	if (!response.ok) {
 		return new Response(
 			JSON.stringify({ error: { message: 'An error occurred while creating the application' } }),
