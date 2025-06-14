@@ -102,7 +102,9 @@
 
 	{#if message}
 		<div class="mb-4">
-			<div>{message}</div>
+			<div class="my-3">
+				<p class="text-gray-700">{message}</p>
+			</div>
 
 			{#if getApplicationStatusLoading}
 				<div class="rounded bg-gray-100 p-2">
